@@ -408,9 +408,9 @@ class Game(object):
             if self.body.carried:
                 if(self.body.bloody):
                     x,y = self.body.pos
-                    if not self.level.get_bool(x,y,"blood"):
+                    if not self.level.get_bool(x,y,'blood'):
                         sprite = Sprite(self.body.pos,SPRITE_CACHE["images/blood.png"])
-                        self.level.set_bool(x,y,"blood")
+                        self.level.set_bool(x,y,'blood')
                         self.sprites.add(sprite)
                 self.body.pos = self.player.pos
 
