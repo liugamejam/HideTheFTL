@@ -136,14 +136,25 @@ class Sprite(pygame.sprite.Sprite):
 
     def update(self, *args):
         """Run the current animation."""
-
         self.animation.next()
 
+
+class Body(Sprite):
+    """ Display and animate the body. """
+
+    is_player = False
+    carried = False
+
+    def __init__(self, pos=(2,2)):
+        self.frames = SPRITE_CACHE["skeleton.png"]
+        Sprite.__init__(self, pos)
+        self.direction = 2
 
 class Player(Sprite):
     """ Display and animate the player character."""
 
     is_player = True
+    carrying = False
 
     def __init__(self, pos=(1, 1)):
         self.frames = SPRITE_CACHE["player.png"]
@@ -311,6 +322,9 @@ class Game(object):
             if tile.get("player") in ('true', '1', 'yes', 'on'):
                 sprite = Player(pos)
                 self.player = sprite
+            elif tile.get("body") in ('true', '1', 'yes', 'on'):
+                sprite = Body(pos)
+                self.body = sprite
             else:
                 sprite = Sprite(pos, SPRITE_CACHE[tile["sprite"]])
             self.sprites.add(sprite)
@@ -341,14 +355,36 @@ class Game(object):
             if not self.level.is_blocking(x+DX[d], y+DY[d]):
                 self.player.animation = self.player.walk_animation()
 
+        def pickdrop():
+            x,y = self.player.pos
+            if self.player.carrying:
+                self.body.pos = x,y
+                self.body.carried = False
+                self.player.carrying = False
+            else:
+                x2,y2 = self.body.pos
+                if x == x2 and y == y2:
+                    self.body.carried = True
+                    self.player.carrying = True
+
+        def checkbody():
+            if self.body.carried:
+                self.body.pos = self.player.pos
+
         if pressed(pg.K_UP):
             walk(0)
+            checkbody()
         elif pressed(pg.K_DOWN):
             walk(2)
+            checkbody()
         elif pressed(pg.K_LEFT):
             walk(3)
+            checkbody()
         elif pressed(pg.K_RIGHT):
             walk(1)
+            checkbody()
+        elif pressed(pg.K_SPACE):
+            pickdrop()
         self.pressed_key = None
 
     def main(self):
@@ -391,7 +427,7 @@ class Game(object):
 if __name__ == "__main__":
     SPRITE_CACHE = TileCache()
     MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
-    TILE_CACHE = TileCache(32, 32)
+    TILE_CACHE = TileCache(128,128)
     pygame.init()
-    pygame.display.set_mode((424, 320))
+    pygame.display.set_mode((1024,768))
     Game().main()
