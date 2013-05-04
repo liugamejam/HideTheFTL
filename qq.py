@@ -395,9 +395,11 @@ class Game(object):
         def pickdrop():
             x,y = self.player.pos
             if self.player.carrying:
-                self.body.pos = x,y
-                self.body.carried = False
-                self.player.carrying = False
+				self.body.pos = x,y
+				self.body.carried = False
+				self.player.carrying = False
+				if self.level.get_bool(x,y,'stairs'):
+					self.game_over = True
             else:
                 x2,y2 = self.body.pos
                 if x == x2 and y == y2:
