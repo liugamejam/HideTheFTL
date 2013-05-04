@@ -177,7 +177,7 @@ class Player(Sprite):
 	carrying = False
 
 	def __init__(self, pos=(1, 1)):
-		self.frames = SPRITE_CACHE["images/player.png"]
+		self.frames = SPRITE_CACHE["images/player_new.png"]
 		Sprite.__init__(self, pos)
 		self.direction = 2
 		self.animation = None
@@ -329,6 +329,11 @@ class Level(object):
 		if not 0 <= x < self.width or not 0 <= y < self.height:
 			return True
 		return self.get_bool(x, y, 'block')
+		
+	def is_stairs(self, x, y, type):
+		"""Is there a Staicase on this tile?"""
+		
+		return self.get_bool(x, y, type)
 
 
 class Game(object):
@@ -391,6 +396,29 @@ class Game(object):
 			self.player.direction = d
 			if not self.level.is_blocking(x+DX[d], y+DY[d]):
 				self.player.animation = self.player.walk_animation()
+				
+		def gostairs(floor):
+			""" Stat walking in the stairs. """
+			# For now it only exits the game
+
+			# If carring the body to a new floor mission sucessfull
+			x,y = self.player.pos
+			if self.level.is_stairs(x, y, 'down'):
+				is_down_stairs()
+			if self.level.get_bool(x, y, 'down'):
+				down_the_stairs()
+			if self.level.get_bool(x, y, 'up'):
+				up_the_stairs()
+			if self.level.get_bool(x, y, 'stairs'):
+				foundSomeStairs(floor)
+				if floor == "down":
+					if self.player.carrying:
+						self.body.carried = False
+						self.player.carrying = False
+						self.game_over = True
+						exit()
+				elif floor == "up":
+					beep()
 
 		def pickdrop():
 			x,y = self.player.pos
@@ -428,6 +456,10 @@ class Game(object):
 			checkbody()
 		elif pressed(pg.K_SPACE):
 			pickdrop()
+		elif ( pressed(pg.K_GREATER) or ( pressed(pg.K_GREATER) and get_mods(pg.KMOD_SHIFT) ) ):
+			gostairs("down")
+		elif ( pressed(pg.K_LESS) or ( pressed(pg.K_LESS) and get_mods(pg.KMOD_SHIFT) ) ):
+			gostairs("up")
 		self.pressed_key = None
 
 	def main(self):
