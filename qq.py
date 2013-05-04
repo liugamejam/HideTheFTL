@@ -150,6 +150,25 @@ class Body(Sprite):
         self.frames = SPRITE_CACHE["images/skeleton.png"]
         Sprite.__init__(self, pos)
         self.direction = 2
+        
+        
+class NPC(Sprite):
+    is_player = False
+    def __init__(self, pos=(2,2)):
+        self.frames = SPRITE_CACHE["images/npc.png"]
+        Sprite.__init__(self, pos)
+        self.direction = 2
+        
+    def stand_animation(self):
+        """The default animation."""
+
+        while True:
+            # Change to next frame every two ticks
+            for frame in self.frames[2]:
+                self.image = frame
+                yield None
+                yield None
+        
 
 class Player(Sprite):
     """ Display and animate the player character."""
@@ -311,6 +330,7 @@ class Game(object):
 
     def __init__(self):
         self.screen = pygame.display.get_surface()
+        self.npc_list = []
         self.pressed_key = None
         self.game_over = False
         self.shadows = pygame.sprite.RenderUpdates()
@@ -332,7 +352,10 @@ class Game(object):
                 self.player = sprite
             elif tile.get("body") in ('true', '1', 'yes', 'on'):
                 sprite = Body(pos)
-                self.body = sprite
+                self.body = sprite 
+            elif tile.get("npc") in ('true', '1', 'yes', 'on'):
+                sprite = NPC(pos)
+                self.npc_list.append(sprite)
             else:
                 sprite = Sprite(pos, SPRITE_CACHE[tile["sprite"]])
             self.sprites.add(sprite)
