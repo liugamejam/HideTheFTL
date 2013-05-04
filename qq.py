@@ -288,11 +288,11 @@ class Level(object):
 
     def set_bool(self, x, y, name):
         value = self.get_tile(x,y)
-        value[name] = true
+        value[name] = True
 
     def unset_bool(self, x, y, name):
         value = self.get_tile(x,y)
-        value[name] = false
+        value[name] = False
 
     def is_wall(self, x, y):
         """Is there a wall?"""
@@ -378,7 +378,10 @@ class Game(object):
         def checkbody():
             if self.body.carried:
                 if(self.body.bloody):
-                    sprite = Sprite(self.body.pos,SPRITE_CACHE["images/crate.png"])
+                    x,y = self.body.pos
+                    #if not self.level.get_bool(x,y,"blood"):
+                    sprite = Sprite(self.body.pos,SPRITE_CACHE["images/blood.png"])
+                    self.level.set_bool(x,y,"blood")
                     self.sprites.add(sprite)
                 self.body.pos = self.player.pos
 
