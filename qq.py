@@ -144,6 +144,7 @@ class Body(Sprite):
 
     is_player = False
     carried = False
+    bloody = True
 
     def __init__(self, pos=(2,2)):
         self.frames = SPRITE_CACHE["images/skeleton.png"]
@@ -305,7 +306,6 @@ class Level(object):
         return self.get_bool(x, y, 'block')
 
 
-
 class Game(object):
     """The main game object."""
 
@@ -377,6 +377,9 @@ class Game(object):
 
         def checkbody():
             if self.body.carried:
+                if(self.body.bloody):
+                    sprite = Sprite(self.body.pos,SPRITE_CACHE["images/crate.png"])
+                    self.sprites.add(sprite)
                 self.body.pos = self.player.pos
 
         if pressed(pg.K_UP):
@@ -423,7 +426,7 @@ class Game(object):
             # Update the dirty areas of the screen
             pygame.display.update(dirty)
             # Wait for one tick of the game clock
-            clock.tick(15)
+            clock.tick(50)
             # Process pygame events
             for event in pygame.event.get():
                 if event.type == pg.QUIT:
