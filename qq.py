@@ -294,10 +294,16 @@ class Level(object):
             char = self.map[y][x]
         except IndexError:
             return {}
-        try:
-            return self.key[char]
-        except KeyError:
-            return {}
+        if(char != '#'):
+            try:
+                return self.items[(x,y)]
+            except KeyError:
+                return {}
+        else:
+            try:
+                return self.key[char]
+            except KeyError:
+             return {}
 
     def get_bool(self, x, y, name):
         """Tell if the specified flag is set for position on the map."""
@@ -402,10 +408,10 @@ class Game(object):
             if self.body.carried:
                 if(self.body.bloody):
                     x,y = self.body.pos
-                    #if not self.level.get_bool(x,y,"blood"):
-                    sprite = Sprite(self.body.pos,SPRITE_CACHE["images/blood.png"])
-                    self.level.set_bool(x,y,"blood")
-                    self.sprites.add(sprite)
+                    if not self.level.get_bool(x,y,"blood"):
+                        sprite = Sprite(self.body.pos,SPRITE_CACHE["images/blood.png"])
+                        self.level.set_bool(x,y,"blood")
+                        self.sprites.add(sprite)
                 self.body.pos = self.player.pos
 
         if pressed(pg.K_UP):
