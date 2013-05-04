@@ -285,9 +285,16 @@ class Level(object):
         value = self.get_tile(x, y).get(name)
         return value in (True, 1, 'true', 'yes', 'True', 'Yes', '1', 'on', 'On')
 
+    def set_bool(self, x, y, name):
+        value = self.get_tile(x,y)
+        value[name] = true
+
+    def unset_bool(self, x, y, name):
+        value = self.get_tile(x,y)
+        value[name] = false
+
     def is_wall(self, x, y):
         """Is there a wall?"""
-
         return self.get_bool(x, y, 'wall')
 
     def is_blocking(self, x, y):
@@ -296,6 +303,7 @@ class Level(object):
         if not 0 <= x < self.width or not 0 <= y < self.height:
             return True
         return self.get_bool(x, y, 'block')
+
 
 
 class Game(object):
