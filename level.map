@@ -1,5 +1,5 @@
 [level]
-tileset = ground.png
+tileset = images/ground.png
 map =  #########################################
        #.......................................#
        #.......................................#
@@ -23,13 +23,13 @@ tile = 0, 3
 name = player
 tile = 0, 3
 player = true
-sprite = player.png
+sprite = images/player.png
 
 [s]
 name = body
 tile = 0, 3
 body = true
-sprite = skeleton.png
+sprite = images/skeleton.png
 
 [>]
 name = stairs
@@ -38,11 +38,11 @@ tile = 3, 3
 [b]
 name = crate
 tile = 0, 3
-sprite = crate.png
+sprite = images/crate.png
 block = true
 
 [h]
 name = house
 tile = 0, 3
-sprite = house.png
+sprite = images/house.png
 block = true

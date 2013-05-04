@@ -80,7 +80,7 @@ class Shadow(pygame.sprite.Sprite):
 
     def __init__(self, owner):
         pygame.sprite.Sprite.__init__(self)
-        self.image = SPRITE_CACHE["shadow.png"][0][0]
+        self.image = SPRITE_CACHE["images/shadow.png"][0][0]
         self.image.set_alpha(64)
         self.rect = self.image.get_rect()
         self.owner = owner
@@ -146,7 +146,7 @@ class Body(Sprite):
     carried = False
 
     def __init__(self, pos=(2,2)):
-        self.frames = SPRITE_CACHE["skeleton.png"]
+        self.frames = SPRITE_CACHE["images/skeleton.png"]
         Sprite.__init__(self, pos)
         self.direction = 2
 
@@ -157,7 +157,7 @@ class Player(Sprite):
     carrying = False
 
     def __init__(self, pos=(1, 1)):
-        self.frames = SPRITE_CACHE["player.png"]
+        self.frames = SPRITE_CACHE["images/player.png"]
         Sprite.__init__(self, pos)
         self.direction = 2
         self.animation = None
