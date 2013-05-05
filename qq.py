@@ -211,6 +211,7 @@ class Square(object):
 		self.x = x
 		self.y = y
 		self.properties = props
+		self.propertytosprite = {}
 
 	def get_bool(self,prop):
 		value = self.properties.get(prop)
@@ -225,6 +226,16 @@ class Square(object):
 	def switch_bool(self,prop):
 		currval = get_bool(self,prop)
 		self.properties[prop] = not currval
+
+	def set_bool_with_sprite(self,prop,sprite):
+		self.propertytosprite[prop] = sprite
+		self.set_bool(prop)
+
+	def unset_bool_with_sprite(self,prop):
+		retval = self.propertytosprite[prop]
+		del self.propertytosprite[prop]
+		self.unset_bool(prop)
+		return retval
 
 class Squares(object):
 	def __init__(self, lvl):
@@ -249,6 +260,20 @@ class Squares(object):
 
 	def swtich_bool(self,x,y,prop):
 		self.squares[x][y].switch_bool(prop)
+
+	def count_property(self,prop):
+		cnt = 0
+		for x in range(0,self.width):
+			for y in range(0,self.height):
+				if self.get_bool(x,y,prop):
+					cnt = cnt + 1
+		return cnt
+
+	def set_bool_with_sprite(self,x,y,prop,sprite):
+		self.squares[x][y].set_bool_with_sprite(prop,sprite)
+
+	def unset_bool_with_sprite(self,prop):
+		return self.squres[x][y].unset_bool_with_sprite(prop,sprite)
 
 
 class Level(object):
@@ -474,8 +499,8 @@ class Game(object):
 					x,y = self.body.pos
 					if not self.squares.get_bool(x,y,'blood'):
 						sprite = Sprite(self.body.pos,SPRITE_CACHE["images/blood.png"])
-						print("Adding blood at: " + str(x) + ", " + str(y))
-						self.squares.set_bool(x,y,'blood')
+						print("Adding blood at: " + str(x) + ", " + str(y) + ". Total of " + str(self.squares.count_property('blood')) + " squares have blood.")		
+						self.squares.set_bool_with_sprite(x,y,'blood',sprite)
 						self.sprites.add(sprite)
 				self.body.pos = self.player.pos
 
