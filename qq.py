@@ -19,6 +19,7 @@ Note that a lot of additional work is needed to turn it into an actual game.
 """
 
 import ConfigParser
+import copy
 
 import pygame
 import pygame.locals as pg
@@ -205,6 +206,51 @@ class Player(Sprite):
 			except StopIteration:
 				self.animation = None
 
+class Square(object):
+	def __init__(self, x, y, props):
+		self.x = x
+		self.y = y
+		self.properties = props
+
+	def get_bool(self,prop):
+		value = self.properties.get(prop)
+		return value in (True, 1, 'true', 'yes', 'True', 'Yes', '1', 'on', 'On')
+
+	def set_bool(self,prop):
+		self.properties[prop] = True
+
+	def unset_bool(self,prop):
+		self.properties[prop] = False
+
+	def switch_bool(self,prop):
+		currval = get_bool(self,prop)
+		self.properties[prop] = not currval
+
+class Squares(object):
+	def __init__(self, lvl):
+		self.squares = []
+		self.width = lvl.width
+		self.height = lvl.height
+		for i in range(0, self.width):
+			templist = []
+			for j in range(0, self.height):
+				tempsquare = Square(i, j, lvl.get_tile(i,j))
+				templist.append(copy.deepcopy(tempsquare))
+			self.squares.append(copy.copy(templist))
+
+	def get_bool(self,x,y,prop):
+		return self.squares[x][y].get_bool(prop)
+
+	def set_bool(self,x,y,prop):
+		self.squares[x][y].set_bool(prop)
+
+	def unset_bool(self,x,y,prop):
+		self.squares[x][y].unset_bool(prop)
+
+	def swtich_bool(self,x,y,prop):
+		self.squares[x][y].switch_bool(prop)
+
+
 class Level(object):
 	"""Load and store the map of the level, together with all the items."""
 
@@ -342,6 +388,7 @@ class Game(object):
 		self.sprites = SortedUpdates()
 		self.overlays = pygame.sprite.RenderUpdates()
 		self.use_level(Level())
+		self.squares = Squares(self.level)
 
 	def use_level(self, level):
 		"""Set the level as the current one."""
@@ -420,9 +467,10 @@ class Game(object):
 			if self.body.carried:
 				if(self.body.bloody):
 					x,y = self.body.pos
-					if not self.level.get_bool(x,y,'blood'):
+					if not self.squares.get_bool(x,y,'blood'):
 						sprite = Sprite(self.body.pos,SPRITE_CACHE["images/blood.png"])
-						self.level.set_bool(x,y,'blood')
+						print("Adding blood at: " + str(x) + ", " + str(y))
+						self.squares.set_bool(x,y,'blood')
 						self.sprites.add(sprite)
 				self.body.pos = self.player.pos
 
