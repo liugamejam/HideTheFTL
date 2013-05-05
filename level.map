@@ -1,7 +1,7 @@
 [level]
 tileset = images/dungeon.png
 map =  #########################################
-       #......................#........o.......#
+       #......................#.m......o.......#
        #...>..................#................#
        #....@..............._.#####.############
        #.......................................#
@@ -38,7 +38,13 @@ npc = true
 sprite = images/npc.png
 block = true
 
-
+[m]
+name = mop
+tile = 0,0
+mop = true
+item = true
+sprite = images/crate.png
+block = false
 
 [@]
 name = player
@@ -49,6 +55,7 @@ sprite = images/player_new.png
 [s]
 name = body
 tile = 0, 3
+item = true
 body = true
 sprite = images/skeleton.png
 
