@@ -40,7 +40,7 @@ block = true
 
 [m]
 name = mop
-tile = 0,0
+tile = 0,3
 mop = true
 item = true
 sprite = images/mop.png
