@@ -176,7 +176,8 @@ class Player(Sprite):
 	""" Display and animate the player character."""
 
 	is_player = True
-	carrying = False
+	carrying = 'Nothing'
+
 
 	def __init__(self, pos=(1, 1)):
 		self.frames = SPRITE_CACHE["images/player.png"]
@@ -214,6 +215,17 @@ class Square(object):
 		self.properties = props
 		self.propertytosprite = {}
 
+	def get_value(self,prop):
+		return self.properties.get(prop)
+
+	def get_unset_value(self,prop):
+		retval = self.properties.get(prop)
+		del self.properties[prop]
+		return retval
+
+	def set_value(self,prop,val):
+		self.properties[prop] = val
+
 	def get_bool(self,prop):
 		value = self.properties.get(prop)
 		return value in (True, 1, 'true', 'yes', 'True', 'Yes', '1', 'on', 'On')
@@ -250,6 +262,15 @@ class Squares(object):
 				templist.append(copy.deepcopy(tempsquare))
 			self.squares.append(copy.copy(templist))
 
+	def get_value(self,x,y,prop):
+		return self.squares[x][y].get_value(prop)
+
+	def get_unset_value(self,x,y,prop):
+		return self.squares[x][y].get_unset_value(prop)
+
+	def set_value(self,x,y,prop,val):
+		self.squares[x][y].set_value(prop, val)
+
 	def get_bool(self,x,y,prop):
 		return self.squares[x][y].get_bool(prop)
 
@@ -275,6 +296,7 @@ class Squares(object):
 
 	def unset_bool_with_sprite(self,prop):
 		return self.squres[x][y].unset_bool_with_sprite(prop,sprite)
+
 
 
 class Level(object):
@@ -406,6 +428,7 @@ class Game(object):
 	"""The main game object."""
 
 	def __init__(self):
+		pygame.key.set_repeat(5000,5000)
 		self.screen = pygame.display.get_surface()
 		self.npc_list = []
 		self.pressed_key = None
@@ -472,7 +495,7 @@ class Game(object):
 			x,y = self.player.pos
 			if self.level.is_stairs(x, y, 'stairs'):
 				if self.level.is_stairs(x, y, floor):
-					if self.player.carrying:
+					if self.player.carrying == 'body':
 						print('Congratulation! You managed to hide the body...')
 						self.game_over = True
 					else:
@@ -484,15 +507,28 @@ class Game(object):
 
 		def pickdrop():
 			x,y = self.player.pos
-			if self.player.carrying:
-				self.body.pos = x,y
-				self.body.carried = False
-				self.player.carrying = False
+			if self.squares.get_bool(x,y,'item'):
+				s = self.squares.get_unset_value(x,y,'name')
+				print("DEBUG: This square has an item! " + s)
+
+				# If the body is involved, change state.
+				if(s == 'body') or (self.player.carrying == 'body'):
+					self.body.carried = not self.body.carried
+
+				if(self.player.carrying == 'Nothing'):
+					self.squares.unset_bool(x,y,'item')
+					self.player.carrying = s
+				else:
+					self.squares.set_value(x,y,'name',self.player.carrying)
+					self.player.carrying = s
 			else:
-				x2,y2 = self.body.pos
-				if x == x2 and y == y2:
-					self.body.carried = True
-					self.player.carrying = True
+				print("DEBUG: No item here! You are carrying: " + self.player.carrying)
+				if not (self.player.carrying == 'Nothing'):
+					self.squares.set_bool(x,y,'item')
+					self.squares.set_value(x,y,'name', self.player.carrying)
+					if self.player.carrying == 'body':
+						self.body.carried = not self.body.carried
+					self.player.carrying = 'Nothing'
 
 		def checkbody():
 			if self.body.carried:
