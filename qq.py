@@ -505,6 +505,13 @@ class Game(object):
 							self.squares.set_bool_with_sprite(x,y,'blood',sprite)
 							self.sprites.add(sprite)
 				self.body.pos = self.player.pos
+		
+		def rest():
+			x,y = self.player.pos
+			if self.level.get_bool(x, y, 'bed'): 
+				print( 'Time to sleep' )
+			else:
+				print( 'Hurry hurry' )
 
 		if pressed(pg.K_UP):
 			walk(0)
@@ -524,6 +531,8 @@ class Game(object):
 			gostairs('down')
 		elif( pressed(pg.K_u) ):
 			gostairs('up')
+		elif( pressed(pg.K_s) ):
+			rest()
 		# elif ( pressed(pg.K_GREATER) or ( pressed(pg.K_GREATER) and get_mods(pg.KMOD_SHIFT) ) ):
 			# gostairs("down")
 		# elif ( pressed(pg.K_LESS) or ( pressed(pg.K_LESS) and get_mods(pg.KMOD_SHIFT) ) ):
