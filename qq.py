@@ -20,6 +20,7 @@ Note that a lot of additional work is needed to turn it into an actual game.
 
 import ConfigParser
 import copy
+import random
 
 import pygame
 import pygame.locals as pg
@@ -497,11 +498,12 @@ class Game(object):
 			if self.body.carried:
 				if(self.body.bloody):
 					x,y = self.body.pos
-					if not self.squares.get_bool(x,y,'blood'):
-						sprite = Sprite(self.body.pos,SPRITE_CACHE["images/blood.png"])
-						print("Adding blood at: " + str(x) + ", " + str(y) + ". Total of " + str(self.squares.count_property('blood')) + " squares have blood.")		
-						self.squares.set_bool_with_sprite(x,y,'blood',sprite)
-						self.sprites.add(sprite)
+					if random.randint(1, 100) < 60:
+						if not self.squares.get_bool(x,y,'blood'):
+							sprite = Sprite(self.body.pos,SPRITE_CACHE["images/blood.png"])
+							print("Adding blood at: " + str(x) + ", " + str(y) + ". Total of " + str(self.squares.count_property('blood')) + " squares have blood.")		
+							self.squares.set_bool_with_sprite(x,y,'blood',sprite)
+							self.sprites.add(sprite)
 				self.body.pos = self.player.pos
 
 		if pressed(pg.K_UP):
