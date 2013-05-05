@@ -177,7 +177,7 @@ class Player(Sprite):
 	carrying = False
 
 	def __init__(self, pos=(1, 1)):
-		self.frames = SPRITE_CACHE["images/player_new.png"]
+		self.frames = SPRITE_CACHE["images/player.png"]
 		Sprite.__init__(self, pos)
 		self.direction = 2
 		self.animation = None
@@ -397,12 +397,18 @@ class Game(object):
 
 			# If carring the body to a new floor mission sucessfull
 			x,y = self.player.pos
-			if self.level.get_bool(x, y, 'stairs'):
-				if floor == "down":
+			print(x, y, floor)
+			if self.level.is_stairs(x, y, 'stairs'):
+				if self.level.is_stairs(x, y, floor):
 					if self.player.carrying:
+						print('Congratulation! You managed to hide the body...')
 						self.game_over = True
-				elif floor == "up":
-					beep()
+					else:
+						print('DEBUG: Not carrying the body')
+				else:
+					print('DEBUG: Stairs goes in wrong direction!')
+			else:
+				print('DEBUG: You can`t find any stairs.')
 
 		def pickdrop():
 			x,y = self.player.pos
@@ -441,11 +447,13 @@ class Game(object):
 		elif pressed(pg.K_SPACE):
 			pickdrop()
 		elif( pressed(pg.K_d) ):
-			gostairs("down")
-		elif ( pressed(pg.K_GREATER) or ( pressed(pg.K_GREATER) and get_mods(pg.KMOD_SHIFT) ) ):
-			gostairs("down")
-		elif ( pressed(pg.K_LESS) or ( pressed(pg.K_LESS) and get_mods(pg.KMOD_SHIFT) ) ):
-			gostairs("up")
+			gostairs('down')
+		elif( pressed(pg.K_u) ):
+			gostairs('up')
+		# elif ( pressed(pg.K_GREATER) or ( pressed(pg.K_GREATER) and get_mods(pg.KMOD_SHIFT) ) ):
+			# gostairs("down")
+		# elif ( pressed(pg.K_LESS) or ( pressed(pg.K_LESS) and get_mods(pg.KMOD_SHIFT) ) ):
+			# gostairs("up")
 		self.pressed_key = None
 
 	def main(self):
