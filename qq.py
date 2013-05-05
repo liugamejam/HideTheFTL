@@ -291,19 +291,13 @@ class Level(object):
 		"""Tell what's at the specified position of the map."""
 
 		try:
-			char = self.map[y][x]
-		except IndexError:
-			return {}
-		if(char != '#'):
+			return self.items[(x,y)]
+		except KeyError:
 			try:
-				return self.items[(x,y)]
-			except KeyError:
-				return {}
-		else:
-			try:
+				char = self.map[y][x]
 				return self.key[char]
-			except KeyError:
-			 return {}
+			except IndexError:
+				return {}
 
 	def get_bool(self, x, y, name):
 		"""Tell if the specified flag is set for position on the map."""
@@ -403,20 +397,10 @@ class Game(object):
 
 			# If carring the body to a new floor mission sucessfull
 			x,y = self.player.pos
-			if self.level.is_stairs(x, y, 'down'):
-				is_down_stairs()
-			if self.level.get_bool(x, y, 'down'):
-				down_the_stairs()
-			if self.level.get_bool(x, y, 'up'):
-				up_the_stairs()
 			if self.level.get_bool(x, y, 'stairs'):
-				foundSomeStairs(floor)
 				if floor == "down":
 					if self.player.carrying:
-						self.body.carried = False
-						self.player.carrying = False
 						self.game_over = True
-						exit()
 				elif floor == "up":
 					beep()
 
@@ -456,6 +440,8 @@ class Game(object):
 			checkbody()
 		elif pressed(pg.K_SPACE):
 			pickdrop()
+		elif( pressed(pg.K_d) ):
+			gostairs("down")
 		elif ( pressed(pg.K_GREATER) or ( pressed(pg.K_GREATER) and get_mods(pg.KMOD_SHIFT) ) ):
 			gostairs("down")
 		elif ( pressed(pg.K_LESS) or ( pressed(pg.K_LESS) and get_mods(pg.KMOD_SHIFT) ) ):
