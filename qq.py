@@ -294,8 +294,8 @@ class Squares(object):
 	def set_bool_with_sprite(self,x,y,prop,sprite):
 		self.squares[x][y].set_bool_with_sprite(prop,sprite)
 
-	def unset_bool_with_sprite(self,prop):
-		return self.squres[x][y].unset_bool_with_sprite(prop,sprite)
+	def unset_bool_with_sprite(self,x,y,prop):
+		return self.squares[x][y].unset_bool_with_sprite(prop)
 
 
 
@@ -541,7 +541,12 @@ class Game(object):
 							self.squares.set_bool_with_sprite(x,y,'blood',sprite)
 							self.sprites.add(sprite)
 				self.body.pos = self.player.pos
-		
+			if self.player.carrying == 'mop':
+				x,y = self.player.pos
+				if self.squares.get_bool(x,y,'blood'):
+					tempsprite = self.squares.unset_bool_with_sprite(x,y,'blood')
+					self.sprites.remove(tempsprite)
+
 		def rest():
 			x,y = self.player.pos
 			if self.level.get_bool(x, y, 'bed'): 
