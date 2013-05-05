@@ -43,7 +43,7 @@ name = mop
 tile = 0,0
 mop = true
 item = true
-sprite = images/crate.png
+sprite = images/mop.png
 block = false
 
 [@]
