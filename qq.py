@@ -509,9 +509,9 @@ class Game(object):
 		def rest():
 			x,y = self.player.pos
 			if self.level.get_bool(x, y, 'bed'): 
-				print( 'Time to sleep' )
+				print( 'DEBUG: Time to sleep' )
 			else:
-				print( 'Hurry hurry' )
+				print( 'DEBUG: Can`t sleep on the floor! Find a Bed. )
 
 		if pressed(pg.K_UP):
 			walk(0)
