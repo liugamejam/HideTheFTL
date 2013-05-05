@@ -444,7 +444,6 @@ class Game(object):
 
 			# If carring the body to a new floor mission sucessfull
 			x,y = self.player.pos
-			print(x, y, floor)
 			if self.level.is_stairs(x, y, 'stairs'):
 				if self.level.is_stairs(x, y, floor):
 					if self.player.carrying:
@@ -453,7 +452,7 @@ class Game(object):
 					else:
 						print('DEBUG: Not carrying the body')
 				else:
-					print('DEBUG: Stairs goes in wrong direction!')
+					print('DEBUG: Stairs goes in other direction!')
 			else:
 				print('DEBUG: You can`t find any stairs.')
 
